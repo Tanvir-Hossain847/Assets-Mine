@@ -17,28 +17,28 @@ const categories = [
     desc: "Premium dashboards and mobile components.", 
     icon: Figma, 
     count: "450+", 
-    color: "bg-blue-500/10 text-blue-500" 
+    color: "bg-primary/10 text-primary" 
   },
   { 
     name: "Unity Assets", 
     desc: "3D environments & game logic scripts.", 
     icon: Gamepad2, 
     count: "280+", 
-    color: "bg-emerald-500/10 text-emerald-500" 
+    color: "bg-primary/10 text-primary" 
   },
   { 
     name: "3D Models", 
     desc: "High-poly characters and low-poly items.", 
     icon: Box, 
     count: "1.2k+", 
-    color: "bg-purple-500/10 text-purple-500" 
+    color: "bg-primary/10 text-primary" 
   },
   { 
     name: "Web Templates", 
     desc: "Modern landing pages and dashboard kits.", 
     icon: Layout, 
     count: "150+", 
-    color: "bg-orange-500/10 text-orange-500" 
+    color: "bg-primary/10 text-primary" 
   },
 ];
 
