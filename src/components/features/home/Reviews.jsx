@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Star, Quote } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -39,13 +38,10 @@ export default function Reviews() {
       </div>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-        {testimonials.map((review, idx) => (
-          <motion.div
+        {testimonials.map((review) => (
+          <div
             key={review.name}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: idx * 0.1 }}
-            className="relative rounded-3xl border bg-card/30 p-8 backdrop-blur-sm"
+            className="relative rounded-3xl border bg-card/30 p-8 backdrop-blur-sm transition-all duration-200 hover:bg-card hover:shadow-lg"
           >
             <Quote className="absolute right-8 top-8 h-8 w-8 text-primary/5" />
             <div className="flex items-center gap-1 mb-6">
@@ -68,7 +64,7 @@ export default function Reviews() {
                 <p className="text-xs text-muted-foreground">{review.role}</p>
               </div>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

@@ -1,18 +1,12 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Scale, ShieldAlert, FileText, AlertTriangle } from "lucide-react";
 
 export default function LegalSection() {
   return (
     <section className="container mx-auto px-4 py-12 sm:px-6 lg:py-20 border-t border-border/50">
       <div className="mb-12 text-center lg:text-left">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <Scale className="h-6 w-6" />
           </div>
@@ -20,20 +14,14 @@ export default function LegalSection() {
           <p className="mt-2 text-muted-foreground text-lg max-w-2xl">
             Understanding our licensing model and how we handle assets at risk. Please read carefully before downloading or using assets from AssetsMine.
           </p>
-        </motion.div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* GPL License Section */}
-        <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.5 }}
-           className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 sm:p-10 backdrop-blur-sm transition-all hover:border-primary/20 hover:bg-card"
-        >
+        <div className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 sm:p-10 backdrop-blur-sm transition-all duration-200 hover:border-primary/20 hover:bg-card">
           <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform hover:scale-110">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-200 hover:scale-110">
               <FileText className="h-6 w-6" />
             </div>
             <h3 className="text-2xl font-bold tracking-tight">General Public License (GPL)</h3>
@@ -51,18 +39,12 @@ export default function LegalSection() {
               <li>No restrictive licensing keys or usage limits.</li>
             </ul>
           </div>
-        </motion.div>
+        </div>
 
         {/* Assets at Risk Section */}
-        <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true }}
-           transition={{ duration: 0.5, delay: 0.1 }}
-           className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 sm:p-10 backdrop-blur-sm transition-all hover:border-destructive/20 hover:bg-card"
-        >
+        <div className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 sm:p-10 backdrop-blur-sm transition-all duration-200 hover:border-destructive/20 hover:bg-card">
           <div className="mb-6 flex items-center gap-4">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive transition-transform hover:scale-110">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive transition-transform duration-200 hover:scale-110">
               <ShieldAlert className="h-6 w-6" />
             </div>
             <h3 className="text-2xl font-bold tracking-tight">Assets at Risk Protocol</h3>
@@ -84,7 +66,7 @@ export default function LegalSection() {
               If the claim is verified, the asset will be permanently removed. Users who have previously downloaded the asset are advised to cease its use. AssetsMine holds no liability for any damages or legal repercussions arising from the continued use of removed assets. 
             </p>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

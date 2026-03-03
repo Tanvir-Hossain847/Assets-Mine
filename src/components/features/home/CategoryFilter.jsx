@@ -1,7 +1,6 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { motion } from "motion/react";
 
 const categories = [
   { label: "All Assets", value: "all" },
@@ -20,7 +19,7 @@ export default function CategoryFilter() {
             <TabsTrigger 
               key={category.value} 
               value={category.value}
-              className="rounded-md px-6 py-2 transition-all data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              className="rounded-md px-6 py-2 transition-all duration-200 data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               {category.label}
             </TabsTrigger>

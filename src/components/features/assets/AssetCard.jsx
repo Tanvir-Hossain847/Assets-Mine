@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Figma, Gamepad2, Box, Layout } from "lucide-react";
@@ -17,14 +16,8 @@ const PlatformIcon = ({ type }) => {
 
 export default function AssetCard({ asset }) {
   return (
-    <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <Card className="group overflow-hidden border-border/50 bg-card/50 transition-all hover:border-primary/50 hover:bg-card hover:shadow-2xl hover:shadow-primary/10">
+    <div className="transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]">
+      <Card className="group overflow-hidden border-border/50 bg-card/50 transition-all duration-200 hover:border-primary/50 hover:bg-card hover:shadow-2xl hover:shadow-primary/10">
         <CardContent className="p-0">
           <div className="relative aspect-[4/3] overflow-hidden">
              {/* Asset Image */}
@@ -33,7 +26,7 @@ export default function AssetCard({ asset }) {
                 src={asset.image} 
                 alt={asset.title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
                 unoptimized
               />
             ) : (
@@ -41,7 +34,7 @@ export default function AssetCard({ asset }) {
             )}
             
             {/* Dark Overlay on Hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
             
             <div className="absolute right-3 top-3 z-10">
               <Badge variant="secondary" className="glass py-1 backdrop-blur-md">
@@ -67,6 +60,6 @@ export default function AssetCard({ asset }) {
           <p className="text-xs text-muted-foreground">{asset.category}</p>
         </CardFooter>
       </Card>
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import AssetCard from "@/components/features/assets/AssetCard";
 
 const dummyAssets = [
@@ -64,15 +63,8 @@ export default function BentoGrid() {
   return (
     <section className="container mx-auto px-4 py-12 sm:px-6 lg:py-20">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {dummyAssets.map((asset, index) => (
-          <motion.div
-            key={asset.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-          >
-            <AssetCard asset={asset} />
-          </motion.div>
+        {dummyAssets.map((asset) => (
+          <AssetCard key={asset.id} asset={asset} />
         ))}
       </div>
     </section>

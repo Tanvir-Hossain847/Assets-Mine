@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Mail } from "lucide-react";
@@ -8,12 +7,7 @@ import { Mail } from "lucide-react";
 export default function Newsletter() {
   return (
     <section className="container mx-auto px-4 py-20 sm:px-6">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 text-center backdrop-blur-sm sm:p-16 lg:p-24"
-      >
+      <div className="relative overflow-hidden rounded-3xl border bg-card/30 p-8 text-center backdrop-blur-sm sm:p-16 lg:p-24">
         {/* Decorative Background */}
         <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
@@ -36,7 +30,7 @@ export default function Newsletter() {
               className="h-11 rounded-full bg-background/50 focus-visible:ring-primary/30"
               required
             />
-            <Button size="lg" className="h-11 rounded-full px-8 shadow-md transition-all active:scale-95">
+            <Button size="lg" className="h-11 rounded-full px-8 shadow-md transition-all duration-200 active:scale-95">
               Subscribe
             </Button>
           </form>
@@ -44,7 +38,7 @@ export default function Newsletter() {
             By subscribing, you agree to our Terms of Service and Privacy Policy.
           </p>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

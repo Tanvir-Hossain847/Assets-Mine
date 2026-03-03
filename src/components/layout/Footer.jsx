@@ -6,7 +6,7 @@ import { Twitter, Github, Linkedin, Mail, Copyright } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="border-t bg-card/30 backdrop-blur-sm">
-      <div className="container mx-auto px-4 py-12 sm:px-6 lg:py-16">
+      <div className="container mx-auto px-4 w-11/12 mx-auto py-12 sm:px-6 lg:py-16">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-4">
           <div className="space-y-4">
             <Link href="/" className="text-xl font-bold tracking-tight text-primary">
@@ -44,10 +44,10 @@ export default function Footer() {
           <div>
             <h4 className="mb-6 text-sm font-bold uppercase tracking-wider">Company</h4>
             <ul className="space-y-4 text-sm text-muted-foreground">
-              <li><Link href="#" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Sell Your Assets</Link></li>
+              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
+              <li><Link href="/product" className="hover:text-primary transition-colors">Products</Link></li>
               <li><Link href="#" className="hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link href="#" className="hover:text-primary transition-colors">Contact Support</Link></li>
+              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Support</Link></li>
             </ul>
           </div>
 

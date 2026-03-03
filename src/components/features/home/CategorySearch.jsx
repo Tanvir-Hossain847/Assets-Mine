@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { 
   Figma, 
   Gamepad2, 
@@ -51,16 +50,12 @@ export default function CategorySearch() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {categories.map((cat, idx) => (
-          <motion.div
+        {categories.map((cat) => (
+          <div
             key={cat.name}
-            whileHover={{ y: -5, scale: 1.02 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: idx * 0.1 }}
-            className="group relative overflow-hidden rounded-3xl border bg-card/30 p-8 backdrop-blur-sm transition-all hover:border-primary/20 hover:bg-card"
+            className="group relative overflow-hidden rounded-3xl border bg-card/30 p-8 backdrop-blur-sm transition-all duration-200 hover:-translate-y-1 hover:scale-[1.02] hover:border-primary/20 hover:bg-card"
           >
-            <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${cat.color} group-hover:scale-110 transition-transform`}>
+            <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-2xl ${cat.color} group-hover:scale-110 transition-transform duration-200`}>
               <cat.icon className="h-6 w-6" />
             </div>
             <h3 className="text-xl font-bold">{cat.name}</h3>
@@ -68,12 +63,12 @@ export default function CategorySearch() {
             
             <div className="mt-6 flex items-center justify-between">
                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{cat.count} items</span>
-               <Link href={`/category/${cat.name.toLowerCase().replace(/ /g, '-')}`} className="text-primary group-hover:translate-x-1 transition-transform">
+               <Link href={`/category/${cat.name.toLowerCase().replace(/ /g, '-')}`} className="text-primary group-hover:translate-x-1 transition-transform duration-200">
                   <span className="sr-only">Browse</span>
                   <Code className="h-4 w-4" />
                </Link>
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>
