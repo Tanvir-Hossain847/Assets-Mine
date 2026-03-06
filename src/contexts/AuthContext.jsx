@@ -12,6 +12,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -26,6 +27,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 const AuthContext = createContext({});
 
@@ -42,8 +44,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        // Fetch user role from Firestore
+        const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
+        const userData = userDoc.data();
+        
+        setUser({
+          ...firebaseUser,
+          role: userData?.role || "user",
+          createdAt: userData?.createdAt,
+        });
+      } else {
+        setUser(null);
+      }
       setLoading(false);
     });
 
@@ -53,9 +67,19 @@ export function AuthProvider({ children }) {
   // Sign up with email and password
   const signup = async (email, password, displayName) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
     if (displayName) {
       await updateProfile(userCredential.user, { displayName });
     }
+    
+    // Create user document in Firestore with default role
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      email: userCredential.user.email,
+      displayName: displayName || "",
+      role: "user", // Default role
+      createdAt: new Date().toISOString(),
+    });
+    
     return userCredential;
   };
 
@@ -65,9 +89,23 @@ export function AuthProvider({ children }) {
   };
 
   // Sign in with Google
-  const signInWithGoogle = () => {
+  const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    
+    // Check if user document exists, if not create it
+    const userDoc = await getDoc(doc(db, "users", result.user.uid));
+    
+    if (!userDoc.exists()) {
+      await setDoc(doc(db, "users", result.user.uid), {
+        email: result.user.email,
+        displayName: result.user.displayName || "",
+        role: "user", // Default role
+        createdAt: new Date().toISOString(),
+      });
+    }
+    
+    return result;
   };
 
   // Sign out
@@ -90,3 +128,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+export { db };

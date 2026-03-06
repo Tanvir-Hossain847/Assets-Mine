@@ -1,15 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
 
-export default function Hero() {
+export default function InteractiveHero() {
   const canvasRef = useRef(null);
-  const badgeRef = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
-  const buttonsRef = useRef(null);
+  const containerRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -46,11 +43,11 @@ export default function Hero() {
 
         // Create particle system
         const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 1200;
+        const particlesCount = 800;
         const posArray = new Float32Array(particlesCount * 3);
 
         for (let i = 0; i < particlesCount * 3; i++) {
-          posArray[i] = (Math.random() - 0.5) * 120;
+          posArray[i] = (Math.random() - 0.5) * 100;
         }
 
         particlesGeometry.setAttribute(
@@ -59,10 +56,10 @@ export default function Hero() {
         );
 
         const particlesMaterial = new THREE.PointsMaterial({
-          size: 0.5,
+          size: 0.4,
           color: 0xa78bfa,
           transparent: true,
-          opacity: 0.9,
+          opacity: 0.85,
           blending: THREE.AdditiveBlending,
         });
 
@@ -71,26 +68,25 @@ export default function Hero() {
 
         // Create floating geometric shapes
         const geometries = [
-          new THREE.BoxGeometry(3, 3, 3),
-          new THREE.OctahedronGeometry(2),
-          new THREE.TetrahedronGeometry(2),
-          new THREE.TorusGeometry(1.5, 0.5, 16, 100),
-          new THREE.IcosahedronGeometry(1.8),
+          new THREE.BoxGeometry(2, 2, 2),
+          new THREE.OctahedronGeometry(1.5),
+          new THREE.TetrahedronGeometry(1.5),
+          new THREE.TorusGeometry(1, 0.4, 16, 100),
         ];
 
         const material = new THREE.MeshBasicMaterial({
           color: 0xa78bfa,
           wireframe: true,
           transparent: true,
-          opacity: 0.35,
+          opacity: 0.3,
         });
 
         geometries.forEach((geometry, index) => {
           const mesh = new THREE.Mesh(geometry, material);
           mesh.position.set(
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 50,
-            (Math.random() - 0.5) * 30
+            (Math.random() - 0.5) * 40,
+            (Math.random() - 0.5) * 40,
+            (Math.random() - 0.5) * 20
           );
           scene.add(mesh);
           shapes.push(mesh);
@@ -109,19 +105,19 @@ export default function Hero() {
           animationId = requestAnimationFrame(animate);
 
           // Rotate particles
-          particles.rotation.y += 0.0008;
-          particles.rotation.x += 0.0004;
+          particles.rotation.y += 0.001;
+          particles.rotation.x += 0.0005;
 
           // Animate shapes
           shapes.forEach((shape, index) => {
-            shape.rotation.x += 0.008 * (index + 1);
-            shape.rotation.y += 0.008 * (index + 1);
-            shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.015;
+            shape.rotation.x += 0.01 * (index + 1);
+            shape.rotation.y += 0.01 * (index + 1);
+            shape.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
           });
 
           // Camera follows mouse smoothly
-          camera.position.x += (mouseX * 8 - camera.position.x) * 0.05;
-          camera.position.y += (mouseY * 8 - camera.position.y) * 0.05;
+          camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+          camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
           camera.lookAt(scene.position);
 
           renderer.render(scene, camera);
@@ -130,33 +126,17 @@ export default function Hero() {
         animate();
 
         // GSAP Animations
-        if (badgeRef.current) {
-          gsap.fromTo(
-            badgeRef.current,
-            { opacity: 0, scale: 0.8, y: -20 },
-            {
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              duration: 0.8,
-              ease: 'back.out(1.7)',
-              delay: 0.1,
-            }
-          );
-        }
-
         if (titleRef.current) {
           gsap.fromTo(
-            titleRef.current.children,
-            { opacity: 0, y: 60, rotationX: -15 },
+            titleRef.current,
+            { opacity: 0, y: 50, scale: 0.9 },
             {
               opacity: 1,
               y: 0,
-              rotationX: 0,
+              scale: 1,
               duration: 1.2,
               ease: 'power3.out',
-              stagger: 0.15,
-              delay: 0.3,
+              delay: 0.2,
             }
           );
         }
@@ -170,25 +150,19 @@ export default function Hero() {
               y: 0,
               duration: 1,
               ease: 'power3.out',
-              delay: 0.8,
+              delay: 0.6,
             }
           );
         }
 
-        if (buttonsRef.current) {
-          gsap.fromTo(
-            buttonsRef.current.children,
-            { opacity: 0, y: 20, scale: 0.9 },
-            {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              duration: 0.8,
-              ease: 'back.out(1.7)',
-              stagger: 0.1,
-              delay: 1.1,
-            }
-          );
+        if (containerRef.current) {
+          gsap.to(containerRef.current, {
+            y: -10,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: 'power1.inOut',
+          });
         }
 
         // Handle resize
@@ -232,78 +206,42 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[700px] items-center justify-center overflow-hidden py-20 lg:pb-32">
-      {/* Three.js Canvas Background */}
+    <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+      {/* Three.js Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full -z-10"
+        className="absolute inset-0 w-full h-full"
         style={{ background: 'transparent' }}
       />
 
-      {/* Dark Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/60 to-background -z-10" />
-      <div className="absolute inset-0 bg-black/40 -z-10" />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
 
       {/* Content */}
-      <div className="container relative z-10 mx-auto px-4 text-center sm:px-6">
-        <div 
-          ref={badgeRef}
-          className="inline-flex items-center gap-2 rounded-full border bg-background/20 px-4 py-1.5 text-sm font-medium backdrop-blur-md"
-          style={{ opacity: 0 }}
-        >
-          <Sparkles className="h-4 w-4 text-primary" />
-          <span className="text-foreground">New Assets Every Week</span>
-        </div>
-
-        <h1 
+      <div ref={containerRef} className="relative z-10 mx-auto w-11/12 text-center px-4">
+        <h1
           ref={titleRef}
-          className="mt-8 text-4xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl drop-shadow-2xl"
-        >
-          <span style={{ display: 'inline-block', opacity: 0 }}>Build Faster with</span>
-          <br />
-          <span className="text-gradient" style={{ display: 'inline-block', opacity: 0 }}>Premium Digital Assets</span>
-        </h1>
-
-        <p 
-          ref={subtitleRef}
-          className="mx-auto mt-6 max-w-2xl text-lg text-gray-200 sm:text-xl drop-shadow-md"
+          className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-gradient mb-6"
           style={{ opacity: 0 }}
         >
-          Discover high-quality UI kits, 3D models, and Unity assets curated by experts. 
-          Everything you need to launch your next big project.
-        </p>
-
-        <div 
-          ref={buttonsRef}
-          className="mt-10 flex flex-wrap items-center justify-center gap-4"
+          About AssetsMine
+        </h1>
+        <p
+          ref={subtitleRef}
+          className="mt-4 text-xl text-muted-foreground mx-auto max-w-2xl leading-relaxed"
+          style={{ opacity: 0 }}
         >
-           <Button 
-             size="lg" 
-             className="rounded-full bg-primary text-primary-foreground shadow-2xl shadow-primary/40 transition-all duration-200 hover:bg-primary/90 active:scale-95"
-             style={{ opacity: 0 }}
-           >
-             Explore All Assets
-             <ArrowRight className="ml-2 h-4 w-4" />
-           </Button>
-           <Button 
-             size="lg" 
-             variant="outline" 
-             className="rounded-full border-white/20 bg-white/5 text-white backdrop-blur-sm transition-all duration-200 hover:bg-white/10 active:scale-95"
-             style={{ opacity: 0 }}
-           >
-             Sell Your Assets
-           </Button>
-         </div>
+          We are building the world's most comprehensive and accessible marketplace for premium digital assets, empowering creators to build incredible things faster.
+        </p>
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-pulse -z-10" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-primary/10 blur-3xl animate-pulse -z-10" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-primary/5 blur-3xl animate-pulse -z-10" style={{ animationDelay: '2s' }} />
-
+      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-primary/10 blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      
       {/* Loading indicator */}
       {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center -z-10">
+        <div className="absolute inset-0 flex items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
         </div>
       )}
