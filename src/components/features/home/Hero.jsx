@@ -59,10 +59,10 @@ export default function Hero() {
         );
 
         const particlesMaterial = new THREE.PointsMaterial({
-          size: 0.5,
-          color: 0xa78bfa,
+          size: 0.6,
+          color: 0xfdc700,
           transparent: true,
-          opacity: 0.9,
+          opacity: 1,
           blending: THREE.AdditiveBlending,
         });
 
@@ -79,10 +79,10 @@ export default function Hero() {
         ];
 
         const material = new THREE.MeshBasicMaterial({
-          color: 0xa78bfa,
+          color: 0xfdc700,
           wireframe: true,
           transparent: true,
-          opacity: 0.35,
+          opacity: 0.5,
         });
 
         geometries.forEach((geometry, index) => {
@@ -297,9 +297,9 @@ export default function Hero() {
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-pulse -z-10" />
-      <div className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-primary/10 blur-3xl animate-pulse -z-10" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-primary/5 blur-3xl animate-pulse -z-10" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-[#fdc700]/20 blur-3xl animate-pulse -z-10" />
+      <div className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-[#fdc700]/20 blur-3xl animate-pulse -z-10" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-[#fdc700]/15 blur-3xl animate-pulse -z-10" style={{ animationDelay: '2s' }} />
 
       {/* Loading indicator */}
       {!isLoaded && (

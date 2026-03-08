@@ -1,130 +1,274 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { motion } from "motion/react";
-import ImageGallery from "@/components/features/product/ImageGallery";
-import BuySidebar from "@/components/features/product/BuySidebar";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import { useAuth } from "@/contexts/AuthContext";
+import { assetAPI } from "@/lib/api";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Star, Clock, CheckCircle2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Download, 
+  Lock, 
+  Star, 
+  ShoppingCart, 
+  Check,
+  Figma,
+  Gamepad2,
+  Box,
+  Layout
+} from "lucide-react";
 
-export default function ProductDetail() {
-  const { slug } = useParams();
+const PlatformIcon = ({ type }) => {
+  switch (type) {
+    case "figma": return <Figma className="h-5 w-5" />;
+    case "unity": return <Gamepad2 className="h-5 w-5" />;
+    case "3d": return <Box className="h-5 w-5" />;
+    default: return <Layout className="h-5 w-5" />;
+  }
+};
 
-  // Dummy data for now
-  const asset = {
-    title: "Modern SaaS UI Kit - High Fidelity Reusable Components",
-    price: 49,
-    rating: 4.9,
-    reviews: 128,
-    lastUpdate: "Oct 24, 2025",
-    category: "Figma UI Kit",
-    features: [
-      "150+ Reusable Components",
-      "Auto Layout 4.0",
-      "Variable Support",
-      "Dark & Light Mode",
-      "Responsive Layouts",
-    ],
+export default function AssetDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { user } = useAuth();
+  const [asset, setAsset] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isPurchased, setIsPurchased] = useState(false);
+  const [checkingPurchase, setCheckingPurchase] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+
+  useEffect(() => {
+    if (params.slug) {
+      fetchAsset();
+      if (user) {
+        checkPurchaseStatus();
+      }
+    }
+  }, [params.slug, user]);
+
+  const fetchAsset = async () => {
+    try {
+      setLoading(true);
+      const data = await assetAPI.getById(params.slug);
+      setAsset(data);
+    } catch (error) {
+      console.error("Error fetching asset:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="mx-auto w-11/12 px-4 py-8 sm:px-6 lg:py-12"
-    >
-      <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
-          <div>
-            <div className="flex items-center gap-2 text-sm text-primary font-medium uppercase tracking-wider">
-              <span>{asset.category}</span>
-            </div>
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              {asset.title}
-            </h1>
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                <span className="font-medium text-foreground">{asset.rating}</span>
-                <span>({asset.reviews} reviews)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4" />
-                <span>Last Updated: {asset.lastUpdate}</span>
-              </div>
-              <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20">
-                Top Rated
-              </Badge>
-            </div>
-          </div>
+  const checkPurchaseStatus = async () => {
+    try {
+      setCheckingPurchase(true);
+      const result = await assetAPI.checkPurchase(params.slug);
+      setIsPurchased(result.purchased);
+    } catch (error) {
+      console.error("Error checking purchase:", error);
+      setIsPurchased(false);
+    } finally {
+      setCheckingPurchase(false);
+    }
+  };
 
-          <ImageGallery />
+  const handleDownload = async () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
 
-          <div className="pt-4">
-            <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full justify-start border-b bg-transparent p-0 rounded-none h-12">
-                <TabsTrigger value="description" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent shadow-none px-6">
-                  Description
-                </TabsTrigger>
-                <TabsTrigger value="features" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent shadow-none px-6">
-                  Features
-                </TabsTrigger>
-                <TabsTrigger value="changelog" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent shadow-none px-6">
-                  Changelog
-                </TabsTrigger>
-              </TabsList>
-              <div className="py-6">
-                <TabsContent value="description" className="mt-0 space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    Elevate your design workflow with this comprehensive SaaS UI Kit. Built with 
-                    Atomic Design principles, every component is highly customizable and ready for scale.
-                  </p>
-                  <p>
-                    Whether you're building a dashboard, a landing page, or a complex web application, 
-                    this kit provides the foundation you need to deliver high-quality results in half the time.
-                  </p>
-                </TabsContent>
-                <TabsContent value="features" className="mt-0">
-                  <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {asset.features.map((feature, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
-                        <span>{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </TabsContent>
-                <TabsContent value="changelog" className="mt-0">
-                   <div className="space-y-6">
-                      <div className="flex gap-4">
-                         <div className="w-16 shrink-0 text-sm font-bold text-primary">v1.2.0</div>
-                         <div className="space-y-1">
-                            <div className="text-sm font-semibold">Added Figma Variables</div>
-                            <div className="text-sm text-muted-foreground">Full support for light/dark mode switching using variables.</div>
-                         </div>
-                      </div>
-                      <div className="flex gap-4">
-                         <div className="w-16 shrink-0 text-sm font-bold text-primary">v1.1.0</div>
-                         <div className="space-y-1">
-                            <div className="text-sm font-semibold">New Dashboard Components</div>
-                            <div className="text-sm text-muted-foreground">Added 20+ chart types and data table variations.</div>
-                         </div>
-                      </div>
-                   </div>
-                </TabsContent>
-              </div>
-            </Tabs>
-          </div>
-        </div>
+    if (!isPurchased) {
+      alert("Please purchase this asset first");
+      return;
+    }
 
-        {/* Sidebar */}
-        <div>
-          <BuySidebar asset={asset} />
+    try {
+      setDownloading(true);
+      const result = await assetAPI.download(params.slug);
+      
+      if (result.downloadUrl) {
+        window.location.href = result.downloadUrl;
+      }
+    } catch (error) {
+      console.error("Error downloading asset:", error);
+      alert("Failed to download asset: " + error.message);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handlePurchase = () => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+    router.push(`/checkout/${params.slug}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (!asset) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Asset not found</h1>
+          <Button onClick={() => router.push("/")}>Go Home</Button>
         </div>
       </div>
-    </motion.div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background py-12">
+      <div className="mx-auto w-11/12 max-w-7xl px-4">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Left Column - Image */}
+          <div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/50 bg-card/30">
+              {asset.image ? (
+                <Image
+                  src={asset.image}
+                  alt={asset.title}
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/30" />
+              )}
+            </div>
+          </div>
+
+          {/* Right Column - Details */}
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-3 mb-3">
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  <PlatformIcon type={asset.platform} />
+                  {asset.category}
+                </Badge>
+                {isPurchased && (
+                  <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
+                    <Check className="mr-1 h-3 w-3" />
+                    Purchased
+                  </Badge>
+                )}
+              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                {asset.title}
+              </h1>
+              <div className="flex items-center gap-2 mt-3">
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                  <span className="font-semibold">{asset.rating || "4.8"}</span>
+                </div>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground">{asset.sales || 0} sales</span>
+              </div>
+            </div>
+
+            {/* Price */}
+            <div className="rounded-2xl border border-border/50 bg-card/30 p-6">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold">${asset.price}</span>
+                <span className="text-muted-foreground">one-time payment</span>
+              </div>
+            </div>
+
+            {/* Download/Purchase Button */}
+            <div className="space-y-3">
+              {isPurchased ? (
+                <Button
+                  size="lg"
+                  className="w-full rounded-full text-lg font-bold transition-all duration-200 active:scale-95"
+                  onClick={handleDownload}
+                  disabled={downloading}
+                >
+                  {downloading ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-5 w-5" />
+                      Download Now
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  className="w-full rounded-full text-lg font-bold transition-all duration-200 active:scale-95"
+                  onClick={handlePurchase}
+                >
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  Purchase Now
+                </Button>
+              )}
+              
+              {!isPurchased && user && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground justify-center">
+                  <Lock className="h-4 w-4" />
+                  <span>Download available after purchase</span>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            <Card className="border-border/50 bg-card/30">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold mb-3">Description</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  {asset.description || "No description available."}
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Details */}
+            <Card className="border-border/50 bg-card/30">
+              <CardContent className="p-6">
+                <h3 className="text-lg font-bold mb-4">Details</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Platform</span>
+                    <div className="flex items-center gap-2">
+                      <PlatformIcon type={asset.platform} />
+                      <span className="font-medium capitalize">{asset.platform}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Category</span>
+                    <span className="font-medium">{asset.category}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Status</span>
+                    <Badge variant="secondary" className="capitalize">
+                      {asset.status || "active"}
+                    </Badge>
+                  </div>
+                  {asset.createdAt && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Published</span>
+                      <span className="font-medium">
+                        {new Date(asset.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

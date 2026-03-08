@@ -1,71 +1,72 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import AssetCard from "@/components/features/assets/AssetCard";
-
-const dummyAssets = [
-  { 
-    id: 1, 
-    title: "Modern SaaS UI Kit", 
-    price: 49, 
-    category: "Figma", 
-    platform: "figma", 
-    rating: 4.9,
-    image: "https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg"
-  },
-  { 
-    id: 2, 
-    title: "3D Abstract Shapes", 
-    price: 29, 
-    category: "3D Models", 
-    platform: "3d", 
-    rating: 4.8,
-    image: "https://images.pexels.com/photos/3785927/pexels-photo-3785927.jpeg"
-  },
-  { 
-    id: 3, 
-    title: "Fantasy RPG Icons", 
-    price: 19, 
-    category: "Unity", 
-    platform: "unity", 
-    rating: 4.7,
-    image: "https://images.pexels.com/photos/163064/play-stone-network-networked-interactive-163064.jpeg"
-  },
-  { 
-    id: 4, 
-    title: "E-commerce Mobile App", 
-    price: 59, 
-    category: "Figma", 
-    platform: "figma", 
-    rating: 4.9,
-    image: "https://images.pexels.com/photos/1092671/pexels-photo-1092671.jpeg"
-  },
-  { 
-    id: 5, 
-    title: "Cyberpunk Environment", 
-    price: 89, 
-    category: "Unity", 
-    platform: "unity", 
-    rating: 5.0,
-    image: "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg"
-  },
-  { 
-    id: 6, 
-    title: "Minimalist Portfolio", 
-    price: 35, 
-    category: "Figma", 
-    platform: "figma", 
-    rating: 4.6,
-    image: "https://images.pexels.com/photos/6476589/pexels-photo-6476589.jpeg"
-  },
-];
+import { assetAPI } from "@/lib/api";
 
 export default function BentoGrid() {
+  const [assets, setAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAssets();
+  }, []);
+
+  const fetchAssets = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      console.log("Fetching assets from API...");
+      const data = await assetAPI.getAll();
+      console.log("Assets received:", data);
+      setAssets(data);
+    } catch (error) {
+      console.error("Error fetching assets:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="container mx-auto px-4 py-12 sm:px-6 lg:py-20">
+        <div className="flex items-center justify-center py-12">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="container mx-auto px-4 py-12 sm:px-6 lg:py-20">
+        <div className="text-center py-12">
+          <p className="text-destructive mb-4">Error loading assets: {error}</p>
+          <button 
+            onClick={fetchAssets}
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg"
+          >
+            Retry
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="container mx-auto px-4 py-12 sm:px-6 lg:py-20">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {dummyAssets.map((asset) => (
-          <AssetCard key={asset.id} asset={asset} />
-        ))}
+        {assets.length === 0 ? (
+          <div className="col-span-full text-center py-12 text-muted-foreground">
+            No assets available
+          </div>
+        ) : (
+          assets.map((asset) => (
+            <AssetCard key={asset._id || asset.id} asset={asset} />
+          ))
+        )}
       </div>
     </section>
   );

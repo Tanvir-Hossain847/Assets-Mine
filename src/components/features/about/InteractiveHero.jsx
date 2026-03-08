@@ -56,10 +56,10 @@ export default function InteractiveHero() {
         );
 
         const particlesMaterial = new THREE.PointsMaterial({
-          size: 0.4,
-          color: 0xa78bfa,
+          size: 0.5,
+          color: 0xfdc700,
           transparent: true,
-          opacity: 0.85,
+          opacity: 1,
           blending: THREE.AdditiveBlending,
         });
 
@@ -75,10 +75,10 @@ export default function InteractiveHero() {
         ];
 
         const material = new THREE.MeshBasicMaterial({
-          color: 0xa78bfa,
+          color: 0xfdc700,
           wireframe: true,
           transparent: true,
-          opacity: 0.3,
+          opacity: 0.45,
         });
 
         geometries.forEach((geometry, index) => {
@@ -236,8 +236,8 @@ export default function InteractiveHero() {
       </div>
 
       {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-primary/10 blur-3xl animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-[#fdc700]/20 blur-3xl animate-pulse" />
+      <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-[#fdc700]/20 blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       
       {/* Loading indicator */}
       {!isLoaded && (

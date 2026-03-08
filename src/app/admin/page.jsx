@@ -34,8 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { db } from "@/contexts/AuthContext";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { assetAPI, analyticsAPI } from "@/lib/api";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -47,61 +46,55 @@ export default function AdminDashboard() {
     totalSales: 0,
     totalAssets: 0
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchAssets();
-    fetchStats();
+    fetchData();
   }, []);
 
-  const fetchAssets = async () => {
+  const fetchData = async () => {
     try {
-      const assetsSnapshot = await getDocs(collection(db, "assets"));
-      const assetsData = assetsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      setLoading(true);
+      setError(null);
+      
+      // Fetch assets and stats from backend
+      const [assetsData, statsData] = await Promise.all([
+        assetAPI.getAll(),
+        analyticsAPI.getStats()
+      ]);
+      
       setAssets(assetsData);
+      setStats(statsData);
     } catch (error) {
-      console.error("Error fetching assets:", error);
-    }
-  };
-
-  const fetchStats = async () => {
-    try {
-      const usersSnapshot = await getDocs(collection(db, "users"));
-      const assetsSnapshot = await getDocs(collection(db, "assets"));
-      
-      let totalRevenue = 0;
-      let totalSales = 0;
-      
-      assetsSnapshot.docs.forEach(doc => {
-        const data = doc.data();
-        totalSales += data.sales || 0;
-        totalRevenue += (data.price || 0) * (data.sales || 0);
-      });
-
-      setStats({
-        totalRevenue,
-        totalUsers: usersSnapshot.size,
-        totalSales,
-        totalAssets: assetsSnapshot.size
-      });
-    } catch (error) {
-      console.error("Error fetching stats:", error);
+      console.error("Error fetching data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteAsset = async (assetId) => {
     if (confirm("Are you sure you want to delete this asset?")) {
       try {
-        await deleteDoc(doc(db, "assets", assetId));
-        fetchAssets();
-        fetchStats();
+        await assetAPI.delete(assetId);
+        fetchData();
       } catch (error) {
         console.error("Error deleting asset:", error);
+        alert("Failed to delete asset: " + error.message);
       }
     }
   };
+
+  if (loading) {
+    return (
+      <ProtectedRoute requireAdmin={true}>
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        </div>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute requireAdmin={true}>
@@ -122,32 +115,47 @@ export default function AdminDashboard() {
               </Link>
             </header>
 
+            {error && (
+              <div className="mb-6 rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+                <p className="font-semibold">Error loading data</p>
+                <p className="text-sm">{error}</p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={fetchData}
+                  className="mt-2"
+                >
+                  Retry
+                </Button>
+              </div>
+            )}
+
             {/* Stats Grid */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <StatCard 
                 title="Total Revenue" 
-                value={`$${stats.totalRevenue.toLocaleString()}`} 
+                value={`$${stats.totalRevenue?.toLocaleString() || 0}`} 
                 trend="up" 
                 trendValue="+12.5%" 
                 icon={DollarSign} 
               />
               <StatCard 
                 title="Active Users" 
-                value={stats.totalUsers.toString()} 
+                value={stats.totalUsers?.toString() || "0"} 
                 trend="up" 
                 trendValue="+5.2%" 
                 icon={Users} 
               />
               <StatCard 
                 title="Total Sales" 
-                value={stats.totalSales.toString()} 
+                value={stats.totalSales?.toString() || "0"} 
                 trend="up" 
                 trendValue="+8.1%" 
                 icon={ShoppingCart} 
               />
               <StatCard 
                 title="Published Assets" 
-                value={stats.totalAssets.toString()} 
+                value={stats.totalAssets?.toString() || "0"} 
                 trend="up" 
                 trendValue="+2.4%" 
                 icon={Package} 

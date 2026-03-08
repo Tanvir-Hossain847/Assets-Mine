@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Download, Figma, Gamepad2, Box, Layout } from "lucide-react";
@@ -15,9 +16,12 @@ const PlatformIcon = ({ type }) => {
 };
 
 export default function AssetCard({ asset }) {
+  const assetId = asset._id || asset.id;
+  
   return (
-    <div className="transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]">
-      <Card className="group overflow-hidden border-border/50 bg-card/50 transition-all duration-200 hover:border-primary/50 hover:bg-card hover:shadow-2xl hover:shadow-primary/10">
+    <Link href={`/asset/${assetId}`}>
+      <div className="transition-transform duration-200 hover:-translate-y-1 hover:scale-[1.02] active:scale-[0.98]">
+        <Card className="group overflow-hidden border-border/50 bg-card/50 transition-all duration-200 hover:border-primary/50 hover:bg-card hover:shadow-2xl hover:shadow-primary/10">
         <CardContent className="p-0">
           <div className="relative aspect-[4/3] overflow-hidden">
              {/* Asset Image */}
@@ -61,5 +65,6 @@ export default function AssetCard({ asset }) {
         </CardFooter>
       </Card>
     </div>
+    </Link>
   );
 }
