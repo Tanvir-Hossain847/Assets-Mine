@@ -53,11 +53,26 @@ export const publicApiClient = async (endpoint, options = {}) => {
       },
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const url = `${API_BASE_URL}${endpoint}`;
+    console.log("Fetching from:", url);
+    
+    const response = await fetch(url, config);
     
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "API request failed");
+      // Try to get error message from response
+      const contentType = response.headers.get("content-type");
+      let errorMessage = `API request failed with status ${response.status}`;
+      
+      if (contentType && contentType.includes("application/json")) {
+        const error = await response.json();
+        errorMessage = error.message || errorMessage;
+      } else {
+        const text = await response.text();
+        console.error("Non-JSON response:", text.substring(0, 200));
+        errorMessage = `Backend returned HTML instead of JSON. Is the backend server running on ${API_BASE_URL}?`;
+      }
+      
+      throw new Error(errorMessage);
     }
     
     return await response.json();

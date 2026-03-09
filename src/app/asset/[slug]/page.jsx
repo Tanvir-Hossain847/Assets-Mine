@@ -126,23 +126,32 @@ export default function AssetDetailPage() {
     );
   }
 
+  // Map backend fields to frontend fields
+  const title = asset.title || asset.name || "Untitled";
+  const image = asset.image || asset.picture;
+  const price = asset.price || 0;
+  const rating = asset.rating || 4.5;
+  const category = asset.category || asset.language || "Asset";
+  const platform = asset.platform || (asset.platforms && asset.platforms[0]) || "unity";
+  const description = asset.description || "No description available.";
+
   return (
     <div className="min-h-screen bg-background py-12">
       <div className="mx-auto w-11/12 max-w-7xl px-4">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Left Column - Image */}
           <div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/50 bg-card/30">
-              {asset.image ? (
+            <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-border/50 bg-card/30">
+              {image ? (
                 <Image
-                  src={asset.image}
-                  alt={asset.title}
+                  src={image}
+                  alt={title}
                   fill
                   className="object-cover"
                   unoptimized
                 />
               ) : (
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/30" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/10 to-primary/30" />
               )}
             </div>
           </div>
@@ -152,8 +161,8 @@ export default function AssetDetailPage() {
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <Badge variant="secondary" className="flex items-center gap-1">
-                  <PlatformIcon type={asset.platform} />
-                  {asset.category}
+                  <PlatformIcon type={platform} />
+                  {category}
                 </Badge>
                 {isPurchased && (
                   <Badge className="bg-green-500/10 text-green-500 border-green-500/20">
@@ -163,12 +172,12 @@ export default function AssetDetailPage() {
                 )}
               </div>
               <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-                {asset.title}
+                {title}
               </h1>
               <div className="flex items-center gap-2 mt-3">
                 <div className="flex items-center gap-1">
                   <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                  <span className="font-semibold">{asset.rating || "4.8"}</span>
+                  <span className="font-semibold">{rating}</span>
                 </div>
                 <span className="text-muted-foreground">•</span>
                 <span className="text-muted-foreground">{asset.sales || 0} sales</span>
@@ -178,7 +187,7 @@ export default function AssetDetailPage() {
             {/* Price */}
             <div className="rounded-2xl border border-border/50 bg-card/30 p-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-bold">${asset.price}</span>
+                <span className="text-4xl font-bold">${price}</span>
                 <span className="text-muted-foreground">one-time payment</span>
               </div>
             </div>
@@ -228,7 +237,7 @@ export default function AssetDetailPage() {
               <CardContent className="p-6">
                 <h3 className="text-lg font-bold mb-3">Description</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  {asset.description || "No description available."}
+                  {description}
                 </p>
               </CardContent>
             </Card>
@@ -241,14 +250,20 @@ export default function AssetDetailPage() {
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Platform</span>
                     <div className="flex items-center gap-2">
-                      <PlatformIcon type={asset.platform} />
-                      <span className="font-medium capitalize">{asset.platform}</span>
+                      <PlatformIcon type={platform} />
+                      <span className="font-medium capitalize">{platform}</span>
                     </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Category</span>
-                    <span className="font-medium">{asset.category}</span>
+                    <span className="font-medium">{category}</span>
                   </div>
+                  {asset.language && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Language</span>
+                      <span className="font-medium">{asset.language}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Status</span>
                     <Badge variant="secondary" className="capitalize">

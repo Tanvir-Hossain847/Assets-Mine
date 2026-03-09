@@ -15,7 +15,7 @@ export default function Home() {
       <Hero />
       <div className="mx-auto w-11/12 space-y-12">
         <CategoryFilter />
-        <BentoGrid />
+        <BentoGrid limit={6} showViewAll={true} />
         <CategorySearch />
         <Reviews />
         <LegalSection />
